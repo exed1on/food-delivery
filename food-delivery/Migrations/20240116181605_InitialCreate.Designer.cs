@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace fooddelivery.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240116120355_InitialCreate")]
+    [Migration("20240116181605_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -68,8 +68,7 @@ namespace fooddelivery.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.HasIndex("CartId")
-                        .IsUnique();
+                    b.HasIndex("CartId");
 
                     b.HasIndex("CustomerId")
                         .IsUnique();
@@ -142,7 +141,7 @@ namespace fooddelivery.Migrations
                     b.Property<long>("FoodId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("OrderId")
+                    b.Property<long?>("OrderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("Pieces")
@@ -165,8 +164,8 @@ namespace fooddelivery.Migrations
             modelBuilder.Entity("food_delivery.Domain.Customer", b =>
                 {
                     b.HasOne("food_delivery.Domain.Cart", "Cart")
-                        .WithOne()
-                        .HasForeignKey("food_delivery.Domain.Customer", "CartId")
+                        .WithMany()
+                        .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -186,7 +185,7 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("food_delivery.Domain.OrderItem", b =>
                 {
-                    b.HasOne("food_delivery.Domain.Cart", "Cart")
+                    b.HasOne("food_delivery.Domain.Cart", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -198,17 +197,11 @@ namespace fooddelivery.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("food_delivery.Domain.Order", "Order")
+                    b.HasOne("food_delivery.Domain.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Food");
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("food_delivery.Domain.Cart", b =>

@@ -15,16 +15,6 @@ namespace food_delivery.Domain
         [ForeignKey("FoodId")]
         public Food Food { get; set; }
 
-        public long OrderId { get; set; }
-
-        [ForeignKey("OrderId")]
-        public Order Order { get; set; }
-
-        public long CartId { get; set; }
-
-        [ForeignKey("CartId")]
-        public Cart Cart { get; set; }
-
         [Required]
         public long Pieces { get; set; }
 

@@ -92,10 +92,10 @@ namespace fooddelivery.Migrations
                     OrderItemId = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FoodId = table.Column<long>(type: "bigint", nullable: false),
-                    OrderId = table.Column<long>(type: "bigint", nullable: false),
-                    CartId = table.Column<long>(type: "bigint", nullable: false),
                     Pieces = table.Column<long>(type: "bigint", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false)
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    CartId = table.Column<long>(type: "bigint", nullable: false),
+                    OrderId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,15 +116,13 @@ namespace fooddelivery.Migrations
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "OrderId");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CartId",
                 table: "Customers",
-                column: "CartId",
-                unique: true);
+                column: "CartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CustomerId",

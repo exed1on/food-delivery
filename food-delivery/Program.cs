@@ -10,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IFoodDeliveryService, DefaultFoodDeliveryService>();
 builder.Services.AddScoped<ICustomerService, DefaultCustomerService>();
+builder.Services.AddScoped<ICartService, DefaultCartService>();
 builder.Services.AddScoped<AppDbContext>();
 
 var app = builder.Build();
