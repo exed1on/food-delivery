@@ -12,13 +12,18 @@ namespace food_delivery.Domain
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long CartId { get; set; }
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<OrderItem> OrderItems { get; set; } 
         [Required]
         public decimal Price { get; set; }
 
-        public Cart()
+        public Cart(decimal price, List<OrderItem> orderItems)
         {
-            Price = 0;
+            Price = price;
+            OrderItems = orderItems;
+        }
+        public Cart() 
+        {
+            OrderItems = new List<OrderItem>();
         }
 
         public override bool Equals(object obj)
@@ -50,7 +55,7 @@ namespace food_delivery.Domain
                 stringBuilder.AppendLine("Order Items:");
                 foreach (var orderItem in OrderItems)
                 {
-                    stringBuilder.AppendLine($"  OrderItemId: {orderItem.OrderItemId}, FoodId: {orderItem.FoodId}, Pieces: {orderItem.Pieces}, Price: {orderItem.Price}");
+                    stringBuilder.AppendLine($"  OrderItemId: {orderItem.OrderItemId}, FoodId: {orderItem.Food.FoodId}, Pieces: {orderItem.Pieces}, Price: {orderItem.Price}");
                 }
             }
             else

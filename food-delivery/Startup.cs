@@ -23,7 +23,6 @@ public class Startup
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
         services.AddControllersWithViews();
-        services.AddScoped<IFoodDeliveryService, DefaultFoodDeliveryService>();
         services.AddMvc();
         services.AddHttpContextAccessor();
 

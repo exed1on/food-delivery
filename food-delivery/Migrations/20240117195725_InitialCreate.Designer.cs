@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace fooddelivery.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240116181605_InitialCreate")]
+    [Migration("20240117195725_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -111,6 +111,9 @@ namespace fooddelivery.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrderId"));
 
+                    b.Property<long>("CartId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("CustomerId")
                         .HasColumnType("bigint");
 
@@ -121,6 +124,8 @@ namespace fooddelivery.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("CartId");
 
                     b.HasIndex("CustomerId");
 
@@ -135,13 +140,10 @@ namespace fooddelivery.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OrderItemId"));
 
-                    b.Property<long>("CartId")
+                    b.Property<long?>("CartId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("FoodId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("OrderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("Pieces")
@@ -155,8 +157,6 @@ namespace fooddelivery.Migrations
                     b.HasIndex("CartId");
 
                     b.HasIndex("FoodId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
                 });
@@ -174,11 +174,19 @@ namespace fooddelivery.Migrations
 
             modelBuilder.Entity("food_delivery.Domain.Order", b =>
                 {
+                    b.HasOne("food_delivery.Domain.Cart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("food_delivery.Domain.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cart");
 
                     b.Navigation("Customer");
                 });
@@ -187,19 +195,13 @@ namespace fooddelivery.Migrations
                 {
                     b.HasOne("food_delivery.Domain.Cart", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CartId");
 
                     b.HasOne("food_delivery.Domain.Food", "Food")
                         .WithMany()
                         .HasForeignKey("FoodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("food_delivery.Domain.Order", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
 
                     b.Navigation("Food");
                 });
@@ -212,11 +214,6 @@ namespace fooddelivery.Migrations
             modelBuilder.Entity("food_delivery.Domain.Customer", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("food_delivery.Domain.Order", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

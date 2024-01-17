@@ -24,12 +24,16 @@ namespace food_delivery.Controllers
         }
 
         [HttpPost("addToCart")]
-        public ActionResult<Cart> AddToCart([FromBody] CartDto addToCartDto)
+        public ActionResult<Cart> AddToCart([FromBody] AddToCartDto addToCartDto)
         {
             try
             {
                 var customer = _customerService.GetCustomerByUsername(addToCartDto.UserName);
-                var cart = _cartService.GetCartById(customer.CartId);
+
+                if (customer == null)
+                {
+                    return NotFound("Customer not found");
+                }
 
                 var food = _foodDeliveryservice.GetFoodByName(addToCartDto.FoodName);
 
@@ -38,11 +42,15 @@ namespace food_delivery.Controllers
                     return NotFound("Food not found");
                 }
 
-                _cartService.AddFoodToCart(cart, food, addToCartDto.Quantity);
+                if(customer.Cart == null)
+                {
+                    
+                }
 
-                cart.OrderItems = _cartService.GetCartItems(cart);
+                var updatedCart = _cartService.AddFoodToCart(customer, food, addToCartDto.Quantity);
 
-                return Ok(cart);
+
+                return Ok(updatedCart);
             }
             catch (AuthenticationException ex)
             {
@@ -60,7 +68,7 @@ namespace food_delivery.Controllers
             try
             {
                 var customer = _customerService.GetCustomerByUsername(userName);
-                var cart = _cartService.GetCartById(customer.CartId);
+                var cart = _cartService.GetCartById(customer.Cart.CartId);
 
                 cart.OrderItems = _cartService.GetCartItems(cart);
                 return Ok(cart);
@@ -76,12 +84,12 @@ namespace food_delivery.Controllers
         }
 
         [HttpDelete("removeFromCart")]
-        public ActionResult<Cart> RemoveFromCart([FromBody] CartDto addToCartDto)
+        public ActionResult<Cart> RemoveFromCart([FromBody] RemoveFromCartDto addToCartDto)
         {
             try
             {
                 var customer = _customerService.GetCustomerByUsername(addToCartDto.UserName);
-                var cart = _cartService.GetCartById(customer.CartId);
+                var cart = _cartService.GetCartById(customer.Cart.CartId);
 
                 var food = _foodDeliveryservice.GetFoodByName(addToCartDto.FoodName);
 
@@ -107,12 +115,12 @@ namespace food_delivery.Controllers
         }
 
         [HttpPut("updateCartItemQuantity")]
-        public ActionResult<Cart> UpdateCartItemQuantity([FromBody] CartDto updateCartItemQuantityDto)
+        public ActionResult<Cart> UpdateCartItemQuantity([FromBody] AddToCartDto updateCartItemQuantityDto)
         {
             try
             {
                 var customer = _customerService.GetCustomerByUsername(updateCartItemQuantityDto.UserName);
-                var cart = _cartService.GetCartById(customer.CartId);
+                var cart = _cartService.GetCartById(customer.Cart.CartId);
 
                 var food = _foodDeliveryservice.GetFoodByName(updateCartItemQuantityDto.FoodName);
 

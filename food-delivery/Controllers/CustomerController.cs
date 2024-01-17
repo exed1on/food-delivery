@@ -26,7 +26,7 @@ namespace food_delivery.Controllers
         }
 
         [HttpPost("register/")]
-        public ActionResult<Customer> RegisterNewCustomer([FromBody] RegisterDto newCustomer)
+        public ActionResult<string> RegisterNewCustomer([FromBody] RegisterDto newCustomer)
         {
             var customer = _customerService.AddCustomer(newCustomer);
 
@@ -47,7 +47,7 @@ namespace food_delivery.Controllers
 
             return customer;
         }
-        [HttpHead("/Customer/{userName}")]
+        [HttpHead("/api/Customer/{userName}")]
         public IActionResult CheckCustomer(string userName)
         {
             var customer = _customerService.GetCustomerByUsername(userName);

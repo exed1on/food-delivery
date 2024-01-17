@@ -65,27 +65,6 @@ namespace fooddelivery.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    TimestampCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -94,8 +73,7 @@ namespace fooddelivery.Migrations
                     FoodId = table.Column<long>(type: "bigint", nullable: false),
                     Pieces = table.Column<long>(type: "bigint", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    CartId = table.Column<long>(type: "bigint", nullable: false),
-                    OrderId = table.Column<long>(type: "bigint", nullable: true)
+                    CartId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -104,19 +82,41 @@ namespace fooddelivery.Migrations
                         name: "FK_OrderItems_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "CartId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CartId");
                     table.ForeignKey(
                         name: "FK_OrderItems_Foods_FoodId",
                         column: x => x.FoodId,
                         principalTable: "Foods",
                         principalColumn: "FoodId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    CartId = table.Column<long>(type: "bigint", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    TimestampCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId");
+                        name: "FK_Orders_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -141,9 +141,9 @@ namespace fooddelivery.Migrations
                 column: "FoodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_OrderId",
-                table: "OrderItems",
-                column: "OrderId");
+                name: "IX_Orders_CartId",
+                table: "Orders",
+                column: "CartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
@@ -158,10 +158,10 @@ namespace fooddelivery.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "Foods");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Foods");
 
             migrationBuilder.DropTable(
                 name: "Customers");

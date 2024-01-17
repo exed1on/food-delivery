@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace food_delivery.Domain
 {
@@ -16,10 +17,10 @@ namespace food_delivery.Domain
 
         [Required]
         public decimal Balance { get; set; }
-        public long CartId { get; set; }
 
         [ForeignKey("CartId")]
         public Cart Cart { get; set; }
+        [JsonIgnore]
         public ICollection<Order> Orders { get; set; }
 
         public Customer()
@@ -35,7 +36,6 @@ namespace food_delivery.Domain
             Balance = balance;
             Cart = cart;
             Orders = new List<Order>();
-            CartId = cart.CartId;
         }
 
         public override bool Equals(object obj)

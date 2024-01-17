@@ -66,7 +66,7 @@ namespace food_delivery.Controllers
             return existingFood;
         }
 
-        [HttpHead("/Food/{foodName}")]
+        [HttpHead("/api/Food/{foodName}")]
         public IActionResult CheckCustomer(string foodName)
         {
             var food = _foodDeliveryService.GetFoodByName(foodName);

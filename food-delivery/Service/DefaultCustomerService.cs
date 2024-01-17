@@ -20,7 +20,7 @@ namespace food_delivery.Service
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             customerList = new List<Customer>(_dbContext.Customers);
         }
-        public Customer AddCustomer(RegisterDto customerDto)
+        public string AddCustomer(RegisterDto customerDto)
         {
             if (customerDto == null)
             {
@@ -31,6 +31,7 @@ namespace food_delivery.Service
             {
                 throw new ArgumentException("User with this username already exists");
             }
+
             Cart newCart = CreateNewCart();
 
             Customer customer = new Customer(
@@ -40,10 +41,19 @@ namespace food_delivery.Service
                 balance: 0,
                 cart: newCart
             );
-            var addedCustomer = _dbContext.Customers.Add(customer).Entity;
-            _dbContext.SaveChanges();
 
-            return addedCustomer;
+            _dbContext.Carts.Add(newCart);
+
+            var addedCustomer = _dbContext.Customers.Add(customer).Entity;
+
+            _dbContext.SaveChanges();
+            var fetchedCustomer = _dbContext.Customers
+        .Include(c => c.Cart)
+        .FirstOrDefault(c => c.CustomerId == addedCustomer.CustomerId);
+
+            Console.WriteLine("Customer's Cart after registration:\n" + fetchedCustomer.Cart);
+
+            return "Welcome to our service, " + addedCustomer.Name;
         }
 
         public Customer UpdateCustomer(RegisterDto customerDto)
@@ -79,14 +89,17 @@ namespace food_delivery.Service
         }
         public Customer GetCustomerByUsername(string username)
         {
-            var customer = _dbContext.Customers.FirstOrDefault(c => c.UserName == username);
+            var customer = _dbContext.Customers.Include(c => c.Cart).Include(c => c.Cart.OrderItems).FirstOrDefault(c => c.UserName == username);
 
             return customer;
         }
 
         private Cart CreateNewCart()
         {
-            return new Cart();
+            var cart = new Cart();
+            Console.WriteLine("CREATENEWCART RETURNED CART " + cart.ToString());
+            return cart;
+
         }
 
         public Customer DepositMoney(string userName, double amount)

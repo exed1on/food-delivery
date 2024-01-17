@@ -2,8 +2,8 @@
 {
     public class CartDto
     {
-        public string UserName { get; set; }
-        public string FoodName { get; set; }
-        public int Quantity { get; set; }
+        public long CartId { get; set; }
+        public List<OrderItemDto> OrderItems { get; set; }
+        public decimal Price { get; set; }
     }
 }

@@ -10,10 +10,9 @@ namespace food_delivery.Domain
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long OrderItemId { get; set; }
 
-        public long FoodId { get; set; }
-
         [ForeignKey("FoodId")]
         public Food Food { get; set; }
+        public long FoodId { get; set; }
 
         [Required]
         public long Pieces { get; set; }

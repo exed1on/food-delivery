@@ -12,11 +12,11 @@ namespace food_delivery.Domain
         public long OrderId { get; set; }
 
         [Required]
-        public long CustomerId { get; set; }
-
+        [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        [ForeignKey("CartId")]
+        public Cart Cart{ get; set; }
 
         [Required]
         public decimal Price { get; set; }
@@ -24,14 +24,16 @@ namespace food_delivery.Domain
         [Required]
         public DateTime TimestampCreated { get; set; }
 
+
         public Order()
         {
         }
 
         public Order(Customer customer)
         {
-            CustomerId = customer.CustomerId;
-            OrderItems = customer.Cart.OrderItems;
+            Customer = customer;
+            Cart = customer.Cart;
+            Price = customer.Cart.Price;
             TimestampCreated = DateTime.Now;
         }
 
@@ -41,12 +43,12 @@ namespace food_delivery.Domain
                 return false;
 
             Order otherOrder = (Order)obj;
-            return OrderId == otherOrder.OrderId && CustomerId == otherOrder.CustomerId && OrderItems.SequenceEqual(otherOrder.OrderItems) && Price == otherOrder.Price && TimestampCreated == otherOrder.TimestampCreated;
+            return OrderId == otherOrder.OrderId && Customer.CustomerId == otherOrder.Customer.CustomerId && Cart.OrderItems.SequenceEqual(otherOrder.Cart.OrderItems) && Price == otherOrder.Price && TimestampCreated == otherOrder.TimestampCreated;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(OrderId, CustomerId, OrderItems, Price, TimestampCreated);
+            return HashCode.Combine(OrderId, Customer.CustomerId, Cart.OrderItems, Price, TimestampCreated);
         }
     }
 }

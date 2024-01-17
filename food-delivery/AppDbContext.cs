@@ -1,5 +1,7 @@
 ﻿using food_delivery.Domain;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+
 public class AppDbContext : DbContext
 {
     public DbSet<Food> Foods { get; set; }
@@ -19,12 +21,6 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Order>()
-            .HasOne(o => o.Customer)
-            .WithMany(c => c.Orders)
-            .HasForeignKey(o => o.CustomerId)
-            .IsRequired();
 
         modelBuilder.Entity<Customer>()
             .HasIndex(c => c.CustomerId)

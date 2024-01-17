@@ -45,62 +45,15 @@ namespace food_delivery.Service
             return matchingFood;
         }
 
-        public void UpdateCart(Customer customer, Food food, int pieces)
+        public string GetFoodNameById(long foodId)
         {
-            if (pieces < 0)
-                throw new ArgumentException("Amount of food must not be negative");
 
-            Cart cart = customer.Cart;
+            Console.WriteLine("FOOD ID - " + foodId);
+            Food matchingFood = _dbContext.Foods
+                .FirstOrDefault(f => f.FoodId == foodId);
+            Console.WriteLine("FOOD NAME - " + matchingFood);
 
-            if (decimal.Add(cart.Price, food.Price * pieces) > customer.Balance)
-                throw new LowBalanceException("This order exceeds your current balance");
-
-            var orders = cart.OrderItems;
-
-            if (orders.Any(x => x.Food.Equals(food)))
-            {
-                var existingOrderItem = orders.First(x => x.Food.Equals(food));
-
-                if (pieces == 0)
-                {
-                    cart.Price -= existingOrderItem.Food.Price * existingOrderItem.Pieces;
-                    orders.Remove(existingOrderItem);
-                    cart.OrderItems = orders;
-                    customer.Cart = cart;
-                    return;
-                }
-
-                int indexOfOrderItem = orders.ToList().FindIndex(x => x.Equals(existingOrderItem));
-                orders.ToList()[indexOfOrderItem] = new OrderItem(food, pieces, food.Price);
-                cart.Price += food.Price * (pieces - existingOrderItem.Pieces);
-                cart.OrderItems = orders;
-                customer.Cart = cart;
-                return;
-            }
-            else
-            {
-                if (pieces == 0)
-                    throw new ArgumentException("You cannot add an item in amount of 0");
-            }
-
-            orders.Add(new OrderItem(food, pieces, food.Price));
-            cart.OrderItems = orders;
-            cart.Price += food.Price * pieces;
-            customer.Cart = cart;
-        }
-
-        public Order CreateOrder(Customer customer)
-        {
-            var cart = customer.Cart;
-
-            if (cart.OrderItems == null || cart.OrderItems.Count == 0)
-                throw new InvalidOperationException("Cart cannot be empty");
-
-            var order = new Order(customer);
-            customer.Balance -= order.Price;
-            customer.Cart = Cart.GetEmptyCart();
-            _dbContext.SaveChanges();
-            return order;
+            return matchingFood?.Name;
         }
 
         public Food AddFood(FoodDto newFood)
