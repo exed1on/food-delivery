@@ -66,11 +66,18 @@ namespace food_delivery.Controllers
             return existingFood;
         }
 
-        [HttpHead("/{foodName}")]
-        public bool CheckCustomer(string foodName)
+        [HttpHead("/Food/{foodName}")]
+        public IActionResult CheckCustomer(string foodName)
         {
-            var isCustomer = _foodDeliveryService.CheckFoodByName(foodName);
-            return isCustomer;
+            var food = _foodDeliveryService.GetFoodByName(foodName);
+            if(food != null)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

@@ -21,19 +21,12 @@ namespace food_delivery.Controllers
         [HttpPost("authenticate")]
         public ActionResult<Customer> Authenticate([FromBody] Credentials credentials)
         {
-            try
-            {
                 var customer = _customerService.Authenticate(credentials);
                 return customer;
-            }
-            catch (AuthenticationException ex)
-            {
-                throw new AuthenticationException("Wrong credentials");
-            }
         }
 
         [HttpPost("register/")]
-        public ActionResult<Customer> RegisterNewCustomer([FromBody] CustomerDto newCustomer)
+        public ActionResult<Customer> RegisterNewCustomer([FromBody] RegisterDto newCustomer)
         {
             var customer = _customerService.AddCustomer(newCustomer);
 
@@ -41,7 +34,7 @@ namespace food_delivery.Controllers
         }
 
         [HttpPut("update/")]
-        public ActionResult<Customer> UpdateExistingCustomer([FromBody] CustomerDto newCustomer)
+        public ActionResult<Customer> UpdateExistingCustomer([FromBody] RegisterDto newCustomer)
         {
             var customer = _customerService.UpdateCustomer(newCustomer);
 
@@ -54,18 +47,18 @@ namespace food_delivery.Controllers
 
             return customer;
         }
-        [HttpGet("find/")]
-        public string FindCustomer([FromBody] string username)
+        [HttpHead("/Customer/{userName}")]
+        public IActionResult CheckCustomer(string userName)
         {
-            var customerName = _customerService.GetCustomerByUsername(username).Name;
-
-            return customerName;
-        }
-        [HttpHead("/{userName}")]
-        public bool CheckCustomer(string userName)
-        {
-            var isCustomer = _customerService.CheckCustomerByUsername(userName);
-            return isCustomer;
+            var customer = _customerService.GetCustomerByUsername(userName);
+            if (customer != null)
+            {               
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost("deposit/")]

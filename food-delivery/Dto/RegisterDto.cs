@@ -1,6 +1,6 @@
 ﻿namespace food_delivery.Dto
 {
-    public class CustomerDto
+    public class RegisterDto
     {
         public string Name { get; set; }
         public string UserName { get; set; }

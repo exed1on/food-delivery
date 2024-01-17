@@ -12,7 +12,7 @@ namespace food_delivery.Service
         Order CreateOrder(Customer customer);
         Food AddFood(FoodDto food);
         Food UpdateFood(FoodDto updatedFood);
+        Food GetFoodByName(string name);
         string DeleteFood(long foodId);
-        bool CheckFoodByName(string foodName);
     }
 }

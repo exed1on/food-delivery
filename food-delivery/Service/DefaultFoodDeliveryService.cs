@@ -38,6 +38,13 @@ namespace food_delivery.Service
             return _dbContext.Foods.ToList();
         }
 
+        public Food? GetFoodByName(string name)
+        {
+            Food matchingFood = _dbContext.Foods
+        .FirstOrDefault(f => f.Name.ToLower() == name.ToLower());
+            return matchingFood;
+        }
+
         public void UpdateCart(Customer customer, Food food, int pieces)
         {
             if (pieces < 0)
@@ -92,6 +99,7 @@ namespace food_delivery.Service
             var order = new Order(customer);
             customer.Balance -= order.Price;
             customer.Cart = Cart.GetEmptyCart();
+            _dbContext.SaveChanges();
             return order;
         }
 
@@ -101,6 +109,11 @@ namespace food_delivery.Service
             {
                 throw new ArgumentNullException(nameof(newFood));
             }
+            if (_dbContext.Foods.Any(f => f.Name == newFood.Name))
+            {
+                throw new InvalidOperationException("Food with the same name already exists");
+            }
+
             var foodToAdd = new Food(newFood.Name, newFood.Calorie, newFood.Description, newFood.Price);
 
             var addedFood = _dbContext.Foods.Add(foodToAdd).Entity;
@@ -147,10 +160,5 @@ namespace food_delivery.Service
 
             return "Food with id \"" + foodIdToDelete + "\" was succesfully deleted";
         }
-        public bool CheckFoodByName(string foodName)
-        {
-            return _dbContext.Foods.Any(f => f.Name == foodName);
-        }
-
     }
 }

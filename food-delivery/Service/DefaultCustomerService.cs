@@ -20,7 +20,7 @@ namespace food_delivery.Service
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             customerList = new List<Customer>(_dbContext.Customers);
         }
-        public Customer AddCustomer(CustomerDto customerDto)
+        public Customer AddCustomer(RegisterDto customerDto)
         {
             if (customerDto == null)
             {
@@ -46,7 +46,7 @@ namespace food_delivery.Service
             return addedCustomer;
         }
 
-        public Customer UpdateCustomer(CustomerDto customerDto)
+        public Customer UpdateCustomer(RegisterDto customerDto)
         {
             var existingCustomer = _dbContext.Customers.SingleOrDefault(c => c.UserName == customerDto.UserName);
 
@@ -79,26 +79,9 @@ namespace food_delivery.Service
         }
         public Customer GetCustomerByUsername(string username)
         {
-            var customer = _dbContext.Customers.SingleOrDefault(c => c.UserName == username);
-
-            if (customer == null)
-            {
-                throw new ArgumentException("User with this username does not exist");
-            }
+            var customer = _dbContext.Customers.FirstOrDefault(c => c.UserName == username);
 
             return customer;
-        }
-
-        public bool CheckCustomerByUsername(string username)
-        {
-            var customer = _dbContext.Customers.SingleOrDefault(c => c.UserName == username);
-
-            if (customer == null)
-            {
-                throw new ArgumentException("User with this username does not exist");          
-            }
-
-            return true;
         }
 
         private Cart CreateNewCart()

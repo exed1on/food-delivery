@@ -14,22 +14,24 @@ namespace food_delivery.Controllers
     {
         private readonly ICartService _cartService;
         private readonly ICustomerService _customerService;
+        private readonly IFoodDeliveryService _foodDeliveryservice;
 
-        public CartController(ICartService cartService, ICustomerService customerService)
+        public CartController(ICartService cartService, ICustomerService customerService, IFoodDeliveryService foodDeliveryservice)
         {
             _cartService = cartService;
             _customerService = customerService;
+            _foodDeliveryservice = foodDeliveryservice;
         }
 
         [HttpPost("addToCart")]
-        public ActionResult<Cart> AddToCart([FromBody] AddToCartDto addToCartDto)
+        public ActionResult<Cart> AddToCart([FromBody] CartDto addToCartDto)
         {
             try
             {
                 var customer = _customerService.GetCustomerByUsername(addToCartDto.UserName);
                 var cart = _cartService.GetCartById(customer.CartId);
 
-                var food = _cartService.GetFoodById(addToCartDto.FoodId);
+                var food = _foodDeliveryservice.GetFoodByName(addToCartDto.FoodName);
 
                 if (food == null)
                 {
@@ -74,14 +76,14 @@ namespace food_delivery.Controllers
         }
 
         [HttpDelete("removeFromCart")]
-        public ActionResult<Cart> RemoveFromCart([FromBody] AddToCartDto addToCartDto)
+        public ActionResult<Cart> RemoveFromCart([FromBody] CartDto addToCartDto)
         {
             try
             {
                 var customer = _customerService.GetCustomerByUsername(addToCartDto.UserName);
                 var cart = _cartService.GetCartById(customer.CartId);
 
-                var food = _cartService.GetFoodById(addToCartDto.FoodId);
+                var food = _foodDeliveryservice.GetFoodByName(addToCartDto.FoodName);
 
                 if (food == null)
                 {
@@ -105,14 +107,14 @@ namespace food_delivery.Controllers
         }
 
         [HttpPut("updateCartItemQuantity")]
-        public ActionResult<Cart> UpdateCartItemQuantity([FromBody] AddToCartDto updateCartItemQuantityDto)
+        public ActionResult<Cart> UpdateCartItemQuantity([FromBody] CartDto updateCartItemQuantityDto)
         {
             try
             {
                 var customer = _customerService.GetCustomerByUsername(updateCartItemQuantityDto.UserName);
                 var cart = _cartService.GetCartById(customer.CartId);
 
-                var food = _cartService.GetFoodById(updateCartItemQuantityDto.FoodId);
+                var food = _foodDeliveryservice.GetFoodByName(updateCartItemQuantityDto.FoodName);
 
                 if (food == null)
                 {
