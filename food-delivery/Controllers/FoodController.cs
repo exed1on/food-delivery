@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using food_delivery.Domain;
 using food_delivery.Service;
+using food_delivery.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace food_delivery.Controllers
@@ -11,12 +12,10 @@ namespace food_delivery.Controllers
     public class FoodController : ControllerBase
     {
         private readonly IFoodDeliveryService _foodDeliveryService;
-        private readonly AppDbContext _dbContext;
 
         public FoodController(IFoodDeliveryService foodDeliveryService, AppDbContext dbContext)
         {
             Console.WriteLine("FOODCONTROLLER INITIALIZING");
-            _dbContext = dbContext;
             _foodDeliveryService = foodDeliveryService;
      
         }
@@ -30,60 +29,39 @@ namespace food_delivery.Controllers
         }
 
         [HttpPost("addFood")]
-        public ActionResult<Food> AddFood([FromBody] Food newFood)
+        public ActionResult<Food> AddFood([FromBody] FoodDto newFood)
         {
             if (newFood == null)
             {
                 throw new ArgumentNullException(nameof(newFood), "The 'newFood' parameter cannot be null.");
             }
 
-            var addedFood = _dbContext.Foods.Add(newFood).Entity;
-            _dbContext.SaveChanges();
+            var addedFood = _foodDeliveryService.AddFood(newFood);
 
             return addedFood;
         }
         [HttpPut("updateFood")]
-        public ActionResult<Food> UpdateExistingFood([FromBody] Food updatedFood)
+        public ActionResult<Food> UpdateExistingFood([FromBody] FoodDto updatedFood)
         {
             if (updatedFood == null)
             {
                 return BadRequest("The 'updatedFood' parameter cannot be null.");
             }
 
-            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.FoodId == updatedFood.FoodId);
+            var foodAfterUpdate = _foodDeliveryService.UpdateFood(updatedFood);
 
-            if (existingFood == null)
-            {
-                return NotFound("Food not found");
-            }
-
-            existingFood.Name = updatedFood.Name;
-            existingFood.Calorie = updatedFood.Calorie;
-            existingFood.Description = updatedFood.Description;
-            existingFood.Price = updatedFood.Price;
-
-            _dbContext.SaveChanges();
-
-            return existingFood;
+            return foodAfterUpdate;
         }
 
-        [HttpDelete("deleteFood")]
-        public ActionResult<Food> DeleteFood([FromBody] Food foodToDelete)
+        [HttpDelete("deleteFood/{foodIdToDelete}")]
+        public ActionResult<string> DeleteFood(long foodIdToDelete)
         {
-            if (foodToDelete == null)
+            if (foodIdToDelete <= 0)
             {
-                return BadRequest("The 'foodToDelete' parameter cannot be null.");
+                return BadRequest("The 'foodIdToDelete' parameter cannot be less or equal to 0");
             }
 
-            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.FoodId == foodToDelete.FoodId);
-
-            if (existingFood == null)
-            {
-                return NotFound("Food not found");
-            }
-
-            _dbContext.Foods.Remove(existingFood);
-            _dbContext.SaveChanges();
+            var existingFood = _foodDeliveryService.DeleteFood(foodIdToDelete);
 
             return existingFood;
         }

@@ -29,10 +29,12 @@ namespace food_delivery.Service
             {
                 cartItem = new OrderItem(food, quantity, food.Price);
                 cart.OrderItems.Add(cartItem);
+                cart.Price += food.Price * quantity;
             }
             else
             {
                 cartItem.Pieces += quantity;
+                cart.Price += food.Price * (quantity - cartItem.Pieces);
             }
 
             _dbContext.SaveChanges();

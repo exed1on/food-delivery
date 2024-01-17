@@ -1,4 +1,5 @@
 ﻿using food_delivery.Domain;
+using food_delivery.Dto;
 
 namespace food_delivery.Service
 {
@@ -9,9 +10,9 @@ namespace food_delivery.Service
         void UpdateCart(Customer customer, Food food, int pieces);
     
         Order CreateOrder(Customer customer);
-        Food AddFood(Food food);
-        Food UpdateFood(Food updatedFood);
-        Food DeleteFood(string foodName);
+        Food AddFood(FoodDto food);
+        Food UpdateFood(FoodDto updatedFood);
+        string DeleteFood(long foodId);
         bool CheckFoodByName(string foodName);
     }
 }

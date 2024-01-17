@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Authentication;
 using food_delivery.Domain;
+using food_delivery.Dto;
 using food_delivery.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -94,20 +95,21 @@ namespace food_delivery.Service
             return order;
         }
 
-        public Food AddFood(Food newFood)
+        public Food AddFood(FoodDto newFood)
         {
             if (newFood == null)
             {
                 throw new ArgumentNullException(nameof(newFood));
             }
+            var foodToAdd = new Food(newFood.Name, newFood.Calorie, newFood.Description, newFood.Price);
 
-            var addedFood = _dbContext.Foods.Add(newFood).Entity;
+            var addedFood = _dbContext.Foods.Add(foodToAdd).Entity;
             _dbContext.SaveChanges();
 
             return addedFood;
         }
 
-        public Food UpdateFood(Food updatedFood)
+        public Food UpdateFood(FoodDto updatedFood)
         {
             if (updatedFood == null)
             {
@@ -130,24 +132,20 @@ namespace food_delivery.Service
             return existingFood;
         }
 
-        public Food DeleteFood(string foodName)
+        public string DeleteFood(long foodIdToDelete)
         {
-            if (string.IsNullOrEmpty(foodName))
-            {
-                throw new ArgumentNullException(nameof(foodName));
-            }
 
-            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.Name == foodName);
+            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.FoodId == foodIdToDelete);
 
             if (existingFood == null)
             {
-                throw new InvalidOperationException("Food not found");
+                return "There is no food with this id";
             }
 
             _dbContext.Foods.Remove(existingFood);
             _dbContext.SaveChanges();
 
-            return existingFood;
+            return "Food with id \"" + foodIdToDelete + "\" was succesfully deleted";
         }
         public bool CheckFoodByName(string foodName)
         {
