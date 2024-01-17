@@ -82,7 +82,7 @@ namespace food_delivery.Service
                 throw new ArgumentNullException(nameof(updatedFood));
             }
 
-            var existingFood = _dbContext.Foods.Find(updatedFood.Name);
+            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.Name == updatedFood.Name);
 
             if (existingFood == null)
             {
@@ -93,6 +93,7 @@ namespace food_delivery.Service
             existingFood.Description = updatedFood.Description;
             existingFood.Price = updatedFood.Price;
 
+            _dbContext.Foods.Update(existingFood);
             _dbContext.SaveChanges();
 
             return existingFood;
