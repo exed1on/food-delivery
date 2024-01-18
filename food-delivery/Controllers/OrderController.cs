@@ -4,6 +4,7 @@ using food_delivery.Domain;
 using food_delivery.Service;
 using food_delivery.Dto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace food_delivery.Controllers
 {
@@ -21,6 +22,7 @@ namespace food_delivery.Controllers
             _customerService = customerService;
         }
 
+        [Authorize]
         [HttpPost("createOrder")]
         public ActionResult<OrderDto> CreateOrder(string customerUsername)
         {
@@ -42,6 +44,7 @@ namespace food_delivery.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("getOrdersByCustomer")]
         public ActionResult<IEnumerable<OrderDto>> GetOrdersByCustomer(string customerUsername)
         {
@@ -59,7 +62,6 @@ namespace food_delivery.Controllers
             }
             catch (Exception ex)
             {
-                // Handle the exception appropriately, log it, etc.
                 return StatusCode(500, "An error occurred while retrieving orders");
             }
         }

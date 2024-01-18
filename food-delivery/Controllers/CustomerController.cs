@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using food_delivery.Domain;
 using food_delivery.Service;
 using food_delivery.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace food_delivery.Controllers
 {
@@ -18,13 +19,6 @@ namespace food_delivery.Controllers
             _customerService = customerService;
         }
 
-        [HttpPost("authenticate")]
-        public ActionResult<Customer> Authenticate([FromBody] Credentials credentials)
-        {
-                var customer = _customerService.Authenticate(credentials);
-                return customer;
-        }
-
         [HttpPost("register/")]
         public ActionResult<string> RegisterNewCustomer([FromBody] RegisterDto newCustomer)
         {
@@ -33,6 +27,7 @@ namespace food_delivery.Controllers
             return customer;
         }
 
+        [Authorize]
         [HttpPut("update/")]
         public ActionResult<Customer> UpdateExistingCustomer([FromBody] RegisterDto newCustomer)
         {
@@ -40,6 +35,8 @@ namespace food_delivery.Controllers
 
             return customer;
         }
+
+        [Authorize]
         [HttpDelete("delete/")]
         public ActionResult<Customer> DeleteCustomer([FromBody] Credentials creds)
         {
@@ -47,6 +44,8 @@ namespace food_delivery.Controllers
 
             return customer;
         }
+
+        [Authorize(Roles = "ADMIN")]
         [HttpHead("/api/Customer/{userName}")]
         public IActionResult CheckCustomer(string userName)
         {
@@ -61,6 +60,7 @@ namespace food_delivery.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("deposit/")]
         public ActionResult<Customer> RegisterNewCustomer(string userName, double amount)
         {

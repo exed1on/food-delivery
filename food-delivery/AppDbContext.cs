@@ -1,4 +1,5 @@
 ﻿using food_delivery.Domain;
+using food_delivery.Security;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -25,5 +26,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Customer>()
             .HasIndex(c => c.CustomerId)
             .IsUnique();
+
+
+
     }
 }

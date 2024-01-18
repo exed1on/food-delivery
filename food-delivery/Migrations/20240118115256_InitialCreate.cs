@@ -50,6 +50,7 @@ namespace fooddelivery.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     CartId = table.Column<long>(type: "bigint", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
                     UserName = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false)
                 },
@@ -149,6 +150,16 @@ namespace fooddelivery.Migrations
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.InsertData(
+       table: "Carts",
+       columns: new[] { "CartId", "Price" },
+       values: new object[] { 1L, 0m });
+
+            migrationBuilder.InsertData(
+                table: "Customers",
+                columns: new[] { "CustomerId", "Name", "Balance", "CartId", "Role", "UserName", "Password" },
+                values: new object[] { 1L, "Admin", 0m, 1L, 1, "admin", "hashed_admin_password" });
         }
 
         /// <inheritdoc />

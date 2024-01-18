@@ -4,6 +4,7 @@ using food_delivery.Domain;
 using food_delivery.Service;
 using Microsoft.EntityFrameworkCore;
 using food_delivery.Dto;
+using food_delivery.Security;
 
 namespace food_delivery.Service
 {
@@ -39,7 +40,8 @@ namespace food_delivery.Service
                 password: customerDto.Password,
                 name: customerDto.Name,
                 balance: 0,
-                cart: newCart
+                cart: newCart,
+                role: Roles.USER
             );
 
             _dbContext.Carts.Add(newCart);

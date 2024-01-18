@@ -31,7 +31,6 @@ C:\Users\exed1\source\repos\food-delivery\food-delivery\obj\Debug\net7.0\refint\
 C:\Users\exed1\source\repos\food-delivery\food-delivery\obj\Debug\net7.0\food-delivery.pdb
 C:\Users\exed1\source\repos\food-delivery\food-delivery\obj\Debug\net7.0\food-delivery.genruntimeconfig.cache
 C:\Users\exed1\source\repos\food-delivery\food-delivery\obj\Debug\net7.0\ref\food-delivery.dll
-C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\json.json
 C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\Azure.Core.dll
 C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\Azure.Identity.dll
 C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\Humanizer.dll
@@ -115,3 +114,4 @@ C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\runtime
 C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\Npgsql.dll
 C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\exed1\source\repos\food-delivery\food-delivery\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

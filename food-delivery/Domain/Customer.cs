@@ -1,4 +1,5 @@
-﻿using System;
+﻿using food_delivery.Security;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,14 +21,18 @@ namespace food_delivery.Domain
 
         [ForeignKey("CartId")]
         public Cart Cart { get; set; }
+
         [JsonIgnore]
         public ICollection<Order> Orders { get; set; }
+
+        [Required]
+        public Roles Role{ get; set; }
 
         public Customer()
         {
         }
 
-        public Customer(string userName, string password, string name, decimal balance, Cart cart)
+        public Customer(string userName, string password, string name, decimal balance, Cart cart, Roles role)
             : base(userName, password)
         {
             UserName = userName;
@@ -36,6 +41,7 @@ namespace food_delivery.Domain
             Balance = balance;
             Cart = cart;
             Orders = new List<Order>();
+            Role = role;
         }
 
         public override bool Equals(object obj)

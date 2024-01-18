@@ -20,7 +20,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("Host=localhost;Port=5432;Database=food-delivery-db;Username=postgres;Password=133154;")));
 
         services.AddControllersWithViews();
         services.AddMvc();

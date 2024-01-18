@@ -4,6 +4,7 @@ using food_delivery.Domain;
 using food_delivery.Service;
 using food_delivery.Dto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace food_delivery.Controllers
 {
@@ -23,6 +24,7 @@ namespace food_delivery.Controllers
             _foodDeliveryservice = foodDeliveryservice;
         }
 
+        [Authorize]
         [HttpPost("addToCart")]
         public ActionResult<Cart> AddToCart([FromBody] AddToCartDto addToCartDto)
         {
@@ -62,6 +64,7 @@ namespace food_delivery.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("getCart/{userName}")]
         public ActionResult<Cart> GetCart(string userName)
         {
@@ -83,6 +86,7 @@ namespace food_delivery.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("removeFromCart")]
         public ActionResult<Cart> RemoveFromCart([FromBody] RemoveFromCartDto addToCartDto)
         {
@@ -114,6 +118,7 @@ namespace food_delivery.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("updateCartItemQuantity")]
         public ActionResult<Cart> UpdateCartItemQuantity([FromBody] AddToCartDto updateCartItemQuantityDto)
         {
@@ -145,6 +150,7 @@ namespace food_delivery.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("clearCart/{userName}")]
         public ActionResult<string> ClearCart(string userName)
         {

@@ -4,6 +4,7 @@ using food_delivery.Domain;
 using food_delivery.Service;
 using food_delivery.Dto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace food_delivery.Controllers
 {
@@ -28,6 +29,7 @@ namespace food_delivery.Controllers
             return food;
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost("addFood")]
         public ActionResult<Food> AddFood([FromBody] FoodDto newFood)
         {
@@ -40,6 +42,8 @@ namespace food_delivery.Controllers
 
             return addedFood;
         }
+
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("updateFood")]
         public ActionResult<Food> UpdateExistingFood([FromBody] FoodDto updatedFood)
         {
@@ -53,6 +57,7 @@ namespace food_delivery.Controllers
             return foodAfterUpdate;
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("deleteFood/{foodIdToDelete}")]
         public ActionResult<string> DeleteFood(long foodIdToDelete)
         {
@@ -66,6 +71,7 @@ namespace food_delivery.Controllers
             return existingFood;
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpHead("/api/Food/{foodName}")]
         public IActionResult CheckCustomer(string foodName)
         {

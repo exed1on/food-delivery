@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace fooddelivery.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240117195725_InitialCreate")]
+    [Migration("20240118115256_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -61,6 +61,9 @@ namespace fooddelivery.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserName")
                         .IsRequired()
