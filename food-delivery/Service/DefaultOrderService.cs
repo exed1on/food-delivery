@@ -63,6 +63,7 @@ namespace food_delivery.Service
                 Customer = new CustomerDto
                 {
                     UserName = order.Customer.Name,
+                    Balance = customer.Balance,
                 },
                 Cart = new CartDto
                 {

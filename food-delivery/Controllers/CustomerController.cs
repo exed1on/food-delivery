@@ -62,7 +62,7 @@ namespace food_delivery.Controllers
 
         [Authorize]
         [HttpPost("deposit/")]
-        public ActionResult<Customer> RegisterNewCustomer(string userName, double amount)
+        public ActionResult<CustomerDto> RegisterNewCustomer(string userName, double amount)
         {
             if (amount <= 0)
             {

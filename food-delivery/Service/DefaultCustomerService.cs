@@ -104,7 +104,7 @@ namespace food_delivery.Service
 
         }
 
-        public Customer DepositMoney(string userName, double amount)
+        public CustomerDto DepositMoney(string userName, double amount)
         {
             var customer = GetCustomerByUsername(userName);
 
@@ -118,7 +118,18 @@ namespace food_delivery.Service
 
             _dbContext.SaveChanges();
 
-            return customer;
+            var updatedCustomerDto = ConvertToCustomerDto(customer);
+
+            return updatedCustomerDto;
+        }
+
+        private CustomerDto ConvertToCustomerDto(Customer customer)
+        {
+            return new CustomerDto
+            {
+                UserName = customer.UserName,
+                Balance = customer.Balance,
+            };
         }
 
         public Customer Authenticate(Credentials credentials)

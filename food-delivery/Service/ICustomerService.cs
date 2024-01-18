@@ -10,6 +10,6 @@ namespace food_delivery.Service
         Customer UpdateCustomer(RegisterDto customerDto);
         Customer DeleteCustomer(Credentials creds);
         Customer GetCustomerByUsername(string username);
-        Customer DepositMoney(string userName, double amount);
+        CustomerDto DepositMoney(string userName, double amount);
     }
 }
