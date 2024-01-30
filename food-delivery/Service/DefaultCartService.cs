@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Authentication;
 using food_delivery.Domain;
+using food_delivery.Dto;
 using food_delivery.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,13 +22,19 @@ namespace food_delivery.Service
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Cart AddFoodToCart(Customer customer, Food food, int quantity)
+        public Cart AddFoodToCart(AddToCartDto addToCartDto)
         {
-            if (customer == null)
+            if (addToCartDto == null)
             {
-                throw new ArgumentNullException(nameof(customer));
+                throw new ArgumentNullException(nameof(addToCartDto));
             }
 
+            var customer = _dbContext.Customers.Include(c => c.Cart).SingleOrDefault(c => c.UserName == addToCartDto.UserName);
+            if (customer == null)
+            {
+                throw new InvalidOperationException("Customer not found");
+            }
+            Console.WriteLine(customer.UserName);
             var cart = GetCartById(customer.Cart.CartId);
 
             if (cart == null)
@@ -37,12 +44,22 @@ namespace food_delivery.Service
                 customer.Cart = cart;
                 _dbContext.Carts.Add(cart);
             }
+            Console.WriteLine(cart.ToString());
+
+            var food = _dbContext.Foods.SingleOrDefault(f => f.Name == addToCartDto.FoodName);
+
+            if (food == null)
+            {
+                throw new InvalidOperationException("Food not found");
+            }
+
+            Console.WriteLine(food.Name);
 
             var cartItem = cart.OrderItems.FirstOrDefault(ci => ci.Food.FoodId == food.FoodId);
 
             if (cartItem == null)
             {
-                cartItem = new OrderItem(food, quantity, food.Price);
+                cartItem = new OrderItem(food, addToCartDto.Quantity, food.Price);
 
                 if (cart.OrderItems == null)
                 {
@@ -55,7 +72,8 @@ namespace food_delivery.Service
             }
             else
             {
-                cartItem.Pieces += quantity;
+                cartItem.Price = food.Price;
+                cartItem.Pieces += addToCartDto.Quantity;
                 _dbContext.OrderItems.Update(cartItem);
             }
 
@@ -65,7 +83,7 @@ namespace food_delivery.Service
             _dbContext.Customers.Update(customer);
 
             _dbContext.SaveChanges();
-            Console.WriteLine("AFTER ");
+            Console.WriteLine("AFTER");
 
             return customer.Cart;
         }
@@ -102,16 +120,21 @@ namespace food_delivery.Service
         {
             var cartItem = cart.OrderItems.FirstOrDefault(ci => ci.Food.FoodId == food.FoodId);
 
+
             if (cartItem != null)
             {
                 cart.OrderItems.Remove(cartItem);
+                _dbContext.SaveChanges();
+                cart.Price -= food.Price * cartItem.Pieces;
+                _dbContext.Update(cart);
                 _dbContext.SaveChanges();
             }
         }
 
         public List<OrderItem> GetCartItems(Cart cart)
         {
-            return cart.OrderItems.ToList();
+            var sortedOrderItems = cart.OrderItems.OrderBy(item => item.Food.Name).ToList();
+            return sortedOrderItems;
         }
 
         public void UpdateCartItemQuantity(Cart cart, Food food, int newQuantity)
@@ -146,6 +169,7 @@ namespace food_delivery.Service
                     }
 
                     cart.OrderItems.Clear();
+                    cart.Price = 0;
                     _dbContext.Carts.Update(cart);
 
                     _dbContext.SaveChanges();

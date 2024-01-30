@@ -4,6 +4,7 @@ using food_delivery.Domain;
 using food_delivery.Service;
 using food_delivery.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Identity;
 
 namespace food_delivery.Controllers
 {
@@ -28,6 +29,15 @@ namespace food_delivery.Controllers
         }
 
         [Authorize]
+        [HttpGet("balance/{userName}")]
+        public ActionResult<decimal> GetCustomerBalance(string userName)
+        {
+            var customer = _customerService.GetCustomerByUsername(userName);
+
+            return customer.Balance;
+        }
+
+        [Authorize]
         [HttpPut("update/")]
         public ActionResult<Customer> UpdateExistingCustomer([FromBody] RegisterDto newCustomer)
         {
@@ -40,12 +50,18 @@ namespace food_delivery.Controllers
         [HttpDelete("delete/")]
         public ActionResult<Customer> DeleteCustomer([FromBody] Credentials creds)
         {
+            if(creds == null)
+            {
+                throw new ArgumentNullException("You need to provide proper credentials");
+            }
+            if (_customerService.GetCustomerByUsername(creds.UserName).Password != creds.Password)
+            {
+                throw new AuthenticationException("Wrong password");
+            }
             var customer = _customerService.DeleteCustomer(creds);
-
             return customer;
         }
 
-        [Authorize(Roles = "ADMIN")]
         [HttpHead("/api/Customer/{userName}")]
         public IActionResult CheckCustomer(string userName)
         {
@@ -62,7 +78,7 @@ namespace food_delivery.Controllers
 
         [Authorize]
         [HttpPost("deposit/")]
-        public ActionResult<CustomerDto> RegisterNewCustomer(string userName, double amount)
+        public ActionResult<CustomerDto> DepostitMoney(string userName, double amount)
         {
             if (amount <= 0)
             {

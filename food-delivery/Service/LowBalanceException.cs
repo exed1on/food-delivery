@@ -4,8 +4,11 @@ namespace food_delivery.Service
 {
     public class LowBalanceException : Exception
     {
-        public LowBalanceException(string message) : base(message)
+        public string ErrorCode { get; }
+
+        public LowBalanceException(string errorCode, string message) : base(message)
         {
+            ErrorCode = errorCode;
         }
     }
 }

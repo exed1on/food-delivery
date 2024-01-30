@@ -58,32 +58,18 @@ namespace food_delivery.Controllers
         }
 
         [Authorize(Roles = "ADMIN")]
-        [HttpDelete("deleteFood/{foodIdToDelete}")]
-        public ActionResult<string> DeleteFood(long foodIdToDelete)
+        [HttpDelete("deleteFood/{foodNameToDelete}")]
+        public ActionResult<string> DeleteFood(string foodNameToDelete)
         {
-            if (foodIdToDelete <= 0)
-            {
-                return BadRequest("The 'foodIdToDelete' parameter cannot be less or equal to 0");
-            }
-
-            var existingFood = _foodDeliveryService.DeleteFood(foodIdToDelete);
-
-            return existingFood;
+            var existingFood = _foodDeliveryService.DeleteFood(foodNameToDelete);        
+            return "Food was successfully deleted";
         }
 
         [Authorize(Roles = "ADMIN")]
-        [HttpHead("/api/Food/{foodName}")]
-        public IActionResult CheckCustomer(string foodName)
+        [HttpHead("/api/Food/rights")]
+        public IActionResult CheckCustomer()
         {
-            var food = _foodDeliveryService.GetFoodByName(foodName);
-            if(food != null)
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            return Ok();
         }
     }
 }

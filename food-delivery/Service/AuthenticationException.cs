@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace food_delivery.Service
+﻿namespace food_delivery.Service
 {
     public class AuthenticationException : Exception
     {

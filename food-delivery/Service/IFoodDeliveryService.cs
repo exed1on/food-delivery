@@ -10,7 +10,7 @@ namespace food_delivery.Service
         Food AddFood(FoodDto food);
         Food UpdateFood(FoodDto updatedFood);
         Food GetFoodByName(string name);
-        string DeleteFood(long foodId);
+        string DeleteFood(string foodId);
         string GetFoodNameById(long foodId);
     }
 }

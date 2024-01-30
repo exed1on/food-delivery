@@ -5,7 +5,7 @@ namespace food_delivery.Service
 {
     public interface ICartService
     {
-        Cart AddFoodToCart(Customer customer, Food food, int quantity);
+        Cart AddFoodToCart(AddToCartDto addToCartDto);
         void RemoveFoodFromCart(Cart cart, Food food);
         List<OrderItem> GetCartItems(Cart cart);
         void UpdateCartItemQuantity(Cart cart, Food food, int newQuantity);

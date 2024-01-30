@@ -30,27 +30,7 @@ namespace food_delivery.Controllers
         {
             try
             {
-                var customer = _customerService.GetCustomerByUsername(addToCartDto.UserName);
-
-                if (customer == null)
-                {
-                    return NotFound("Customer not found");
-                }
-
-                var food = _foodDeliveryservice.GetFoodByName(addToCartDto.FoodName);
-
-                if (food == null)
-                {
-                    return NotFound("Food not found");
-                }
-
-                if(customer.Cart == null)
-                {
-                    
-                }
-
-                var updatedCart = _cartService.AddFoodToCart(customer, food, addToCartDto.Quantity);
-
+                var updatedCart = _cartService.AddFoodToCart(addToCartDto);
 
                 return Ok(updatedCart);
             }

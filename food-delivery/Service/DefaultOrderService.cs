@@ -39,6 +39,11 @@ namespace food_delivery.Service
                 throw new InvalidOperationException("Cart cannot be empty");
 
             var order = new Order(customer);
+
+            if(customer.Balance < order.Price)
+            {
+                throw new LowBalanceException("NotEnoughBalance", "You do not have enough money on Balance to create this order");
+            }
             customer.Balance -= order.Price;
             customer.Cart = Cart.GetEmptyCart();
 

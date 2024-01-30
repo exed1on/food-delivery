@@ -89,20 +89,45 @@ namespace food_delivery.Service
                 throw new InvalidOperationException("Food not found");
             }
 
+            var cartsToUpdate = _dbContext.Carts
+            .Include(c => c.OrderItems)
+            .Where(cart => cart.OrderItems.Any(item => item.Food.Name == existingFood.Name))
+            .ToList();
+
             existingFood.Calorie = updatedFood.Calorie;
             existingFood.Description = updatedFood.Description;
             existingFood.Price = updatedFood.Price;
 
+            foreach (var cart in cartsToUpdate)
+            {
+                foreach (var orderItem in cart.OrderItems.Where(item => item.Food != null && item.Food.FoodId == existingFood.FoodId))
+                {
+                    orderItem.Food = existingFood;
+                    orderItem.Price = updatedFood.Price;
+                    _dbContext.OrderItems.Update(orderItem);
+                }
+
+                cart.Price = cart.OrderItems.Sum(item => item.Price * item.Pieces);
+                _dbContext.Carts.Update(cart);
+
+                var customer = _dbContext.Customers.Include(c => c.Cart).FirstOrDefault(c => c.Cart.CartId == cart.CartId);
+                if (customer != null)
+                {
+                    customer.Cart = cart;
+                    _dbContext.Customers.Update(customer);
+                }
+            }
+
             _dbContext.Foods.Update(existingFood);
+
             _dbContext.SaveChanges();
 
             return existingFood;
         }
 
-        public string DeleteFood(long foodIdToDelete)
+        public string DeleteFood(string foodNameToDelete)
         {
-
-            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.FoodId == foodIdToDelete);
+            var existingFood = _dbContext.Foods.FirstOrDefault(f => f.Name == foodNameToDelete);
 
             if (existingFood == null)
             {
@@ -112,7 +137,7 @@ namespace food_delivery.Service
             _dbContext.Foods.Remove(existingFood);
             _dbContext.SaveChanges();
 
-            return "Food with id \"" + foodIdToDelete + "\" was succesfully deleted";
+            return "Food with id \"" + foodNameToDelete + "\" was succesfully deleted";
         }
     }
 }
